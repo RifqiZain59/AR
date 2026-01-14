@@ -3,80 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cek WebAR</title>
+    <title>AR Lantai</title>
     
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
+
     <style>
-        body { 
-            background-color: #ffdddd; /* Merah muda */
-            font-family: monospace; 
-            padding: 20px;
-        }
-        #status-log {
-            background: white; 
-            padding: 10px; 
-            border: 2px solid black;
-            margin-bottom: 10px;
-        }
+        body { margin: 0; padding: 0; overflow: hidden; background-color: #333; }
+        
         model-viewer {
-            width: 100%;
-            height: 400px;
-            background-color: #eee;
-            border: 2px dashed red;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        /* Tombol Start AR */
+        .ar-button {
+            background-color: white;
+            border-radius: 4px;
+            border: none;
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 12px 24px;
+            font-weight: bold;
+            font-size: 16px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.25);
+            z-index: 100;
         }
     </style>
-
-    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
 </head>
 <body>
 
-    <h2>🛠️ MODE PENGECEKAN</h2>
-    
-    <div id="status-log">
-        1. HTML Terbuka... OK.<br>
-        2. Menunggu script model-viewer...
-    </div>
-
     <model-viewer 
-        id="viewer"
         src="./model.glb" 
-        alt="Test Model" 
+        alt="Model AR Lantai" 
         ar 
+        ar-modes="webxr scene-viewer quick-look" 
+        ar-placement="floor"
+        ar-scale="auto"
         camera-controls 
-        auto-rotate>
+        auto-rotate 
+        shadow-intensity="1">
         
-        <button slot="ar-button" style="padding:10px; font-size:20px;">
-            📸 Buka Kamera
+        <button slot="ar-button" class="ar-button">
+            👋 Mulai AR (Cari Lantai)
         </button>
 
     </model-viewer>
-
-    <script>
-        const logBox = document.getElementById('status-log');
-        const viewer = document.getElementById('viewer');
-
-        // Fungsi nambah tulisan status
-        function log(msg) {
-            logBox.innerHTML += "<br>" + msg;
-        }
-
-        // Cek apakah script model-viewer jalan
-        customElements.whenDefined('model-viewer').then(() => {
-            log("✅ Script berhasil dimuat! Internet OK.");
-        }).catch((err) => {
-            log("❌ Script GAGAL. Cek koneksi internet.");
-        });
-
-        // Cek Error pada Model
-        viewer.addEventListener('error', (event) => {
-            log("❌ <b>ERROR MODEL:</b> File 'model.glb' tidak ditemukan atau rusak!");
-            log("👉 Pastikan nama file kecil semua: <b>model.glb</b>");
-            log("👉 Pastikan file ada di sebelah index.html");
-        });
-
-        viewer.addEventListener('load', () => {
-            log("✅ <b>BERHASIL!</b> Model ditemukan dan dimuat.");
-        });
-    </script>
 
 </body>
 </html>
