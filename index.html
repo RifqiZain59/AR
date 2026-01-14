@@ -2,54 +2,38 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AR Lantai</title>
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <title>Realtime Marker Tracking</title>
     
-    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
-
+    <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+    
+    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+    
     <style>
-        body { margin: 0; padding: 0; overflow: hidden; background-color: #333; }
-        
-        model-viewer {
-            width: 100vw;
-            height: 100vh;
-        }
-
-        /* Tombol Start AR */
-        .ar-button {
-            background-color: white;
-            border-radius: 4px;
-            border: none;
-            position: absolute;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            padding: 12px 24px;
-            font-weight: bold;
-            font-size: 16px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.25);
-            z-index: 100;
-        }
+        body { margin: 0; overflow: hidden; }
+        /* Menghilangkan tombol VR bawaan A-Frame */
+        .a-enter-vr-button { display: none; }
     </style>
 </head>
-<body>
+<body style="margin : 0px; overflow: hidden;">
 
-    <model-viewer 
-        src="./model.glb" 
-        alt="Model AR Lantai" 
-        ar 
-        ar-modes="webxr scene-viewer quick-look" 
-        ar-placement="floor"
-        ar-scale="auto"
-        camera-controls 
-        auto-rotate 
-        shadow-intensity="1">
-        
-        <button slot="ar-button" class="ar-button">
-            👋 Mulai AR (Cari Lantai)
-        </button>
+    <a-scene embedded arjs='sourceType: webcam; debugUIEnabled: false; detectionMode: mono_and_matrix; matrixCodeType: 3x3;'>
 
-    </model-viewer>
+        <a-marker preset="hiro">
+            
+            <a-entity 
+                gltf-model="./model.glb" 
+                scale="0.5 0.5 0.5" 
+                position="0 0 0" 
+                rotation="0 0 0"
+                animation="property: rotation; to: 0 360 0; loop: true; dur: 10000">
+            </a-entity>
+
+        </a-marker>
+
+        <a-entity camera></a-entity>
+
+    </a-scene>
 
 </body>
 </html>
