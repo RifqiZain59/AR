@@ -3,85 +3,80 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WebAR Auto-Check</title>
+    <title>Cek WebAR</title>
     
-    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
-
     <style>
-        body { margin: 0; background-color: #f0f0f0; font-family: sans-serif; height: 100vh; overflow: hidden; }
-        
+        body { 
+            background-color: #ffdddd; /* Merah muda */
+            font-family: monospace; 
+            padding: 20px;
+        }
+        #status-log {
+            background: white; 
+            padding: 10px; 
+            border: 2px solid black;
+            margin-bottom: 10px;
+        }
         model-viewer {
             width: 100%;
-            height: 100%;
-        }
-
-        /* Tombol Buka Kamera */
-        .ar-button {
-            background-color: #007bff;
-            color: white;
-            padding: 12px 24px;
-            border-radius: 30px;
-            border: none;
-            position: absolute;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 16px;
-            font-weight: bold;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-            z-index: 10;
-        }
-
-        /* Kotak Peringatan Error (Awalnya disembunyikan) */
-        #error-banner {
-            display: none; /* Tersembunyi default */
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            background-color: #ff4444;
-            color: white;
-            padding: 20px;
-            text-align: center;
-            z-index: 9999;
-            box-sizing: border-box;
+            height: 400px;
+            background-color: #eee;
+            border: 2px dashed red;
         }
     </style>
+
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
 </head>
 <body>
 
-    <div id="error-banner">
-        ⚠️ <strong>KAMERA DIBLOKIR</strong><br>
-        Browser memblokir kamera karena link ini tidak aman.<br>
-        Gunakan <strong>HTTPS</strong> (Netlify/Ngrok).
+    <h2>🛠️ MODE PENGECEKAN</h2>
+    
+    <div id="status-log">
+        1. HTML Terbuka... OK.<br>
+        2. Menunggu script model-viewer...
     </div>
 
     <model-viewer 
+        id="viewer"
         src="./model.glb" 
-        alt="AR Model" 
+        alt="Test Model" 
         ar 
-        ar-modes="webxr scene-viewer quick-look" 
         camera-controls 
-        auto-rotate 
-        shadow-intensity="1">
-
-        <button slot="ar-button" class="ar-button">
+        auto-rotate>
+        
+        <button slot="ar-button" style="padding:10px; font-size:20px;">
             📸 Buka Kamera
         </button>
 
     </model-viewer>
 
     <script>
-        // 1. Cek apakah browser mendukung AR
-        const modelViewer = document.querySelector('model-viewer');
-        
-        // 2. Cek apakah Link Aman (HTTPS)
-        if (!window.isSecureContext) {
-            // Jika dibuka lewat IP (192.168.x.x) atau HTTP biasa
-            document.getElementById('error-banner').style.display = 'block';
-            document.querySelector('.ar-button').style.backgroundColor = '#ccc';
-            document.querySelector('.ar-button').innerText = "❌ Kamera Tidak Tersedia";
+        const logBox = document.getElementById('status-log');
+        const viewer = document.getElementById('viewer');
+
+        // Fungsi nambah tulisan status
+        function log(msg) {
+            logBox.innerHTML += "<br>" + msg;
         }
+
+        // Cek apakah script model-viewer jalan
+        customElements.whenDefined('model-viewer').then(() => {
+            log("✅ Script berhasil dimuat! Internet OK.");
+        }).catch((err) => {
+            log("❌ Script GAGAL. Cek koneksi internet.");
+        });
+
+        // Cek Error pada Model
+        viewer.addEventListener('error', (event) => {
+            log("❌ <b>ERROR MODEL:</b> File 'model.glb' tidak ditemukan atau rusak!");
+            log("👉 Pastikan nama file kecil semua: <b>model.glb</b>");
+            log("👉 Pastikan file ada di sebelah index.html");
+        });
+
+        viewer.addEventListener('load', () => {
+            log("✅ <b>BERHASIL!</b> Model ditemukan dan dimuat.");
+        });
     </script>
+
 </body>
 </html>
